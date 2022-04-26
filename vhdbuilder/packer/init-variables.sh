@@ -101,16 +101,20 @@ if [[ "$MODE" == "gen2Mode" ]]; then
 	fi
 fi
 
-# no source image on marketplace, use MSFT/AME SIG as source image
+# Canonical team hit some publications error to publish 18.04 arm64 base os to marketplace and they're working to resolve it. To unblock AKS ARM64 Public Preview sooner,
+# they shared an official 18.04 base os VHD to us, I convert the vhd to SIG in MSFT/AME sub in order that we can build AKS ARM64 SIG from official base os.
 if [[ ${ARCHITECTURE,,} == "arm64" ]]; then
   ARM64_OS_DISK_SNAPSHOT_NAME="arm64_os_disk_snapshot_${CREATE_TIME}"
-  ARM64_SIG_SUBSCRIPTION_ID="a84c0852-ea2d-4359-88e4-11a80a4fb6b9"
-  ARM64_SIG_RESOURCE_GROUP_NAME="ARM64_External_RG"
-  ARM64_SIG_GALLERY_NAME="SantaClaraSIG"
-  ARM64_SIG_IMAGENAME="Ubuntu-18.04-LSG"
-  ARM64_SIG_IMAGE_VERSION="20210930.0.0"
+  ARM64_SIG_SUBSCRIPTION_ID="109a5e88-712a-48ae-9078-9ca8b3c81345"
+  ARM64_SIG_RESOURCE_GROUP_NAME="AKS-Ubuntu"
+  ARM64_SIG_GALLERY_NAME="AKSUbuntu"
+  ARM64_SIG_IMAGENAME="1804gen2arm64containerd"
+  ARM64_SIG_IMAGE_VERSION="2022.04.24"
   if [[ ${TENANT_ID,,} == "72f988bf-86f1-41af-91ab-2d7cd011db47" ]]; then # MSFT Tenant
-    ARM64_SIG_SUBSCRIPTION_ID="6f358ff9-e667-4ae9-b6a0-a57b49aca59c"
+    ARM64_SIG_SUBSCRIPTION_ID="a15c116e-99e3-4c59-aebc-8f864929b4a0"
+    ARM64_SIG_RESOURCE_GROUP_NAME="Arm64SIGRG"
+    ARM64_SIG_GALLERY_NAME="ARM64Gallery"
+    ARM64_SIG_IMAGENAME="UbuntuArm64"
   fi
 
   SIG_IMAGE_NAME=${SIG_IMAGE_NAME//./}Arm64
