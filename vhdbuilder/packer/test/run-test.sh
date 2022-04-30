@@ -65,7 +65,7 @@ else
     #gen2Mode check, set the IMG_DEF to the MANAGED_SIG_ID retrieved from packer-output after VHD Build
     IMG_DEF=${MANAGED_SIG_ID}
   fi
-
+  $ARCHITECTURE=""
   # In SIG mode, Windows VM requires admin-username and admin-password to be set,
   # otherwise 'root' is used by default but not allowed by the Windows Image. See the error image below:
   # ERROR: This user name 'root' meets the general requirements, but is specifically disallowed for this image. Please try a different value.
