@@ -123,6 +123,10 @@ function Adjust-DynamicPortRange()
     # The fix which reduces dynamic port usage for non-DSR load balancers is shiped with KB4550969 in April 2020
     # Update the range to [33000, 65535] to avoid that it conflicts with NodePort range (30000 - 32767)
     Invoke-Executable -Executable "netsh.exe" -ArgList @("int", "ipv4", "set", "dynamicportrange", "tcp", "33000", "32536")
+
+    # https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-faq#what-protocols-can-i-use-within-vnets
+    # UDP source port 65330 is reserved for the host
+    Invoke-Executable -Executable "netsh.exe" -ArgList @("int", "ipv4", "set", "dynamicportrange", "udp", "49152", "16378")
 }
 
 # TODO: should this be in this PR?
