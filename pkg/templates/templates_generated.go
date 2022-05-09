@@ -5880,6 +5880,8 @@ $global:WindowsGmsaPackageUrl = "{{GetVariable "windowsGmsaPackageUrl" }}";
 # TLS Bootstrap Token
 $global:TLSBootstrapToken = "{{GetTLSBootstrapTokenForKubeConfig}}"
 
+$global:IsNotRebootWindowsNode = [System.Convert]::ToBoolean("{{GetVariable "isNotRebootWindowsNode" }}");
+
 # Base64 representation of ZIP archive
 $zippedFiles = "{{ GetKubernetesWindowsAgentFunctions }}"
 
@@ -6160,9 +6162,23 @@ try
         Remove-Item $kubeConfigFile
     }
 
-    # Postpone restart-computer so we can generate CSE response before restarting computer
-    Write-Log "Setup Complete, reboot computer"
-    Postpone-RestartComputer
+    if ($global:IsNotRebootWindowsNode) {
+        Write-Log "Setup Complete, starting NodeResetScriptTask to register Winodws node without reboot"
+        Start-ScheduledTask -TaskName "k8s-restart-job"
+
+        $timeout = 180 ##  seconds
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        while (((Get-ScheduledTask -TaskName 'k8s-restart-job').State -ne 'Ready') -and ($timer.Elapsed.TotalSeconds -lt $timeout)) {
+            Write-Log -Message "Waiting on NodeResetScriptTask..."
+            Start-Sleep -Seconds 3
+        }
+        $timer.Stop()
+        Write-Log -Message "We waited [$($timer.Elapsed.TotalSeconds)] seconds on NodeResetScriptTask"
+    } else {
+        # Postpone restart-computer so we can generate CSE response before restarting computer
+        Write-Log "Setup Complete, reboot computer"
+        Postpone-RestartComputer
+    }
 }
 catch
 {

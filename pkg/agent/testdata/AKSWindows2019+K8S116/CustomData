@@ -181,6 +181,8 @@ $global:WindowsGmsaPackageUrl = "";
 # TLS Bootstrap Token
 $global:TLSBootstrapToken = ""
 
+$global:IsNotRebootWindowsNode = [System.Convert]::ToBoolean("false");
+
 # Base64 representation of ZIP archive
 $zippedFiles = "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"
 
@@ -455,9 +457,23 @@ try
         Remove-Item $kubeConfigFile
     }
 
-    # Postpone restart-computer so we can generate CSE response before restarting computer
-    Write-Log "Setup Complete, reboot computer"
-    Postpone-RestartComputer
+    if ($global:IsNotRebootWindowsNode) {
+        Write-Log "Setup Complete, starting NodeResetScriptTask to register Winodws node without reboot"
+        Start-ScheduledTask -TaskName "k8s-restart-job"
+
+        $timeout = 180 ##  seconds
+        $timer = [Diagnostics.Stopwatch]::StartNew()
+        while (((Get-ScheduledTask -TaskName 'k8s-restart-job').State -ne 'Ready') -and ($timer.Elapsed.TotalSeconds -lt $timeout)) {
+            Write-Log -Message "Waiting on NodeResetScriptTask..."
+            Start-Sleep -Seconds 3
+        }
+        $timer.Stop()
+        Write-Log -Message "We waited [$($timer.Elapsed.TotalSeconds)] seconds on NodeResetScriptTask"
+    } else {
+        # Postpone restart-computer so we can generate CSE response before restarting computer
+        Write-Log "Setup Complete, reboot computer"
+        Postpone-RestartComputer
+    }
 }
 catch
 {
